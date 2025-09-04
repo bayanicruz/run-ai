@@ -17,5 +17,9 @@ Manual Copy-Paste (Current Plan)
 Strava API documentation
 - https://developers.strava.com/docs/getting-started/
 
+WHOOP API documentation
+- https://developer.whoop.com/docs/introduction/
+- https://developer.whoop.com/api
+
 API Host
 Render.com

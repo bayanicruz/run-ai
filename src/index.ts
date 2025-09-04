@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from 'dotenv';
-import authRoutes from './routes/auth.js';
-import activityRoutes from './routes/activity.js';
+import stravaAuthRoutes from './strava/routes/auth.js';
+import whoopAuthRoutes from './whoop/routes/auth.js';
+import stravaActivityRoutes from './strava/routes/activity.js';
+import whoopActivityRoutes from './whoop/routes/activity.js';
 
 config();
 
@@ -16,10 +18,13 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'strava-coach-api' });
 });
 
-app.use('/', authRoutes);
-app.use('/', activityRoutes);
+app.use('/', stravaAuthRoutes);
+app.use('/', whoopAuthRoutes);
+app.use('/', stravaActivityRoutes);
+app.use('/', whoopActivityRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  console.log(`Visit http://localhost:${port}/auth to start OAuth flow`);
+  console.log(`Visit http://localhost:${port}/auth/strava for Strava OAuth`);
+  console.log(`Visit http://localhost:${port}/auth/whoop for Whoop OAuth`);
 });

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { StravaTokenResponse, StravaActivity, SplitMetric } from '../types/strava.js';
+import type { StravaTokenResponse, StravaActivity, SplitMetric } from './types.js';
 
 export function generateAuthUrl(redirectUri: string): string {
   const clientId = process.env.STRAVA_CLIENT_ID!;

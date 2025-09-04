@@ -1,6 +1,6 @@
-# Strava Coach API
+# Fitness Data API
 
-A TypeScript API that fetches Strava running data and formats it for Claude coaching analysis. Accessible via iOS Shortcuts for mobile use.
+A TypeScript API that fetches fitness data from Strava and Whoop, formatted for Claude coaching analysis. Accessible via iOS Shortcuts for mobile use.
 
 ## Project Setup
 
@@ -51,24 +51,34 @@ Adding `"type": "module"` tells Node.js this project uses ES modules, allowing m
 - `npm run typecheck` - Verify types without compiling
 
 ## Environment Variables
-Copy `.env` and fill in your Strava API credentials:
+Copy `.env` and fill in your API credentials:
 ```
-STRAVA_CLIENT_ID=your_client_id_here
-STRAVA_CLIENT_SECRET=your_client_secret_here
-STRAVA_ACCESS_TOKEN=your_access_token_here
+# Strava
+STRAVA_CLIENT_ID=your_strava_client_id_here
+STRAVA_CLIENT_SECRET=your_strava_client_secret_here
+STRAVA_ACCESS_TOKEN=your_strava_access_token_here
+
+# Whoop
+WHOOP_CLIENT_ID=your_whoop_client_id_here
+WHOOP_CLIENT_SECRET=your_whoop_client_secret_here
+WHOOP_ACCESS_TOKEN=your_whoop_access_token_here
+
 PORT=3000
 ```
 
 ## API Endpoints
 
-### `/health`
-Health check endpoint
+### Health
+- `GET /health` - Health check endpoint
 
-### `/auth`
-Initiates Strava OAuth flow (one-time setup)
+### Strava
+- `GET /auth/strava` - Initiates Strava OAuth flow
+- `GET /strava/latest-activity` - Latest running activity with splits
 
-### `/latest-activity`
-Returns your most recent running activity formatted for Claude coaching analysis
+### Whoop
+- `GET /auth/whoop` - Initiates Whoop OAuth flow  
+- `GET /whoop/recovery` - Current recovery score
+- `GET /whoop/latest-running-workout` - Latest running workout with heart rate zones
 
 **Example Response:**
 ```json
@@ -98,8 +108,8 @@ Km 5: 4:43 min/km (+3m)
 ```
 
 ## Usage
-1. Complete OAuth setup once via `/auth`
-2. Call `/latest-activity` to get formatted running data
+1. Complete OAuth setup once via `/auth/strava` and `/auth/whoop`
+2. Call endpoints to get formatted fitness data
 3. Copy `formatted_text` and paste into your Claude coaching thread
 
 ## Deployment
