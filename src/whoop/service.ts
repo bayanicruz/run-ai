@@ -63,7 +63,7 @@ export async function getCurrentRecoveryScore(): Promise<number | null> {
   }
 }
 
-export async function getLatestRunningWorkout(): Promise<any> {
+export async function getLatestWorkout(): Promise<any> {
   const accessToken = getWhoopToken();
   if (!accessToken) return null;
   
@@ -78,17 +78,15 @@ export async function getLatestRunningWorkout(): Promise<any> {
     });
     
     const workouts = workoutResponse.data.records || workoutResponse.data;
-    const runningWorkout = workouts.find(workout => workout.sport_id === RUNNING_SPORT_ID);
     
-    if (!runningWorkout) {
-      console.log('No running workouts found');
+    if (!workouts.length) {
       return null;
     }
     
-    console.log('Found running workout ID:', runningWorkout.id);
+    const latestWorkout = workouts[0];
     
     // Get detailed workout data by ID
-    const detailResponse = await axios.get(`${WHOOP_API_BASE}/activity/workout/${runningWorkout.id}`, {
+    const detailResponse = await axios.get(`${WHOOP_API_BASE}/activity/workout/${latestWorkout.id}`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`
       }
@@ -112,11 +110,11 @@ export function formatRecoveryData(recoveryScore: number): string {
   return `**Today's Recovery: ${recoveryScore}% (${status})**`;
 }
 
-export function formatHeartRateZones(workout: WhoopRunningWorkout): string {
-  if (!workout.zone_duration) return 'No heart rate zone data available';
+export function formatHeartRateZones(workout: any): string {
+  if (!workout.score?.zone_durations) return 'No heart rate zone data available';
   
-  const zones = workout.zone_duration;
-  const totalTime = Object.values(zones).reduce((sum, duration) => sum + duration, 0);
+  const zones = workout.score.zone_durations;
+  const totalTime = Object.values(zones).reduce((sum: number, duration: number) => sum + duration, 0);
   
   if (totalTime === 0) return 'No heart rate zone data available';
   
@@ -127,10 +125,13 @@ export function formatHeartRateZones(workout: WhoopRunningWorkout): string {
   };
   
   const date = new Date(workout.start).toLocaleDateString();
-  const distance = (workout.distance_meter / 1000).toFixed(2);
+  const distance = workout.score.distance_meter ? (workout.score.distance_meter / 1000).toFixed(2) : 'N/A';
+  const sportName = workout.sport_name || 'Workout';
   
-  return `**Latest Running Workout - ${date}**
+  return `**Latest ${sportName} - ${date}**
 **Distance:** ${distance} km
+**Strain:** ${workout.score.strain}
+**Avg HR:** ${workout.score.average_heart_rate} bpm
 
 **Heart Rate Zones:**
 ${formatZone('Zone 1', zones.zone_one_milli)}
