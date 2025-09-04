@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { generateAuthUrl, exchangeCodeForToken } from '../services/stravaService.js';
+import { generateAuthUrl, exchangeCodeForToken } from '../service.js';
 
 const router = Router();
 
-router.get('/auth', (req, res) => {
-  const redirectUri = `http://localhost:${process.env.PORT || 3000}/callback`;
+router.get('/auth/strava', (req, res) => {
+  const redirectUri = `http://localhost:${process.env.PORT || 3000}/callback/strava`;
   const authUrl = generateAuthUrl(redirectUri);
   res.redirect(authUrl);
 });
 
-router.get('/callback', async (req, res) => {
+router.get('/callback/strava', async (req, res) => {
   const { code } = req.query;
   
   if (!code || typeof code !== 'string') {
@@ -20,7 +20,7 @@ router.get('/callback', async (req, res) => {
     const tokens = await exchangeCodeForToken(code);
     
     res.json({
-      message: 'OAuth successful! Copy this access token to your .env file:',
+      message: 'Strava OAuth successful! Copy this access token to your .env file:',
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token
     });

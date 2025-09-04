@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { getLatestActivity, formatActivityForCoaching } from '../services/stravaService.js';
+import { getLatestActivity, formatActivityForCoaching } from '../service.js';
 
 const router = Router();
 
-router.get('/latest-activity', async (req, res) => {
+router.get('/strava/latest-activity', async (req, res) => {
   try {
     const activity = await getLatestActivity();
     
