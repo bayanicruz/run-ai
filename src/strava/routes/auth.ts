@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { generateAuthUrl, exchangeCodeForToken } from '../service.js';
+import { setStravaToken } from '../../tokenCache.js';
 
 const router = Router();
 
@@ -19,8 +20,10 @@ router.get('/callback/strava', async (req, res) => {
   try {
     const tokens = await exchangeCodeForToken(code);
     
+    setStravaToken(tokens.access_token, tokens.refresh_token, tokens.expires_at);
+    
     res.json({
-      message: 'Strava OAuth successful! Copy this access token to your .env file:',
+      message: 'Strava OAuth successful! Token cached for testing.',
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token
     });

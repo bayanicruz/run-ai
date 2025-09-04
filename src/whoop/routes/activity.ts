@@ -1,11 +1,13 @@
 import { Router } from 'express';
-import { getCurrentRecoveryScore, getLatestRunningWorkout, formatRecoveryData, formatHeartRateZones } from '../service.js';
+import { getCurrentRecoveryScore, getLatestWorkout, formatRecoveryData, formatHeartRateZones } from '../service.js';
 
 const router = Router();
 
 router.get('/whoop/recovery', async (req, res) => {
   try {
     const recoveryScore = await getCurrentRecoveryScore();
+    
+    console.log('Recovery score returned from service:', recoveryScore);
     
     if (recoveryScore === null) {
       return res.status(404).json({ error: 'No recovery data found' });
@@ -24,12 +26,12 @@ router.get('/whoop/recovery', async (req, res) => {
   }
 });
 
-router.get('/whoop/latest-running-workout', async (req, res) => {
+router.get('/whoop/latest', async (req, res) => {
   try {
-    const workout = await getLatestRunningWorkout();
+    const workout = await getLatestWorkout();
     
     if (!workout) {
-      return res.status(404).json({ error: 'No running workouts found' });
+      return res.status(404).json({ error: 'No workouts found' });
     }
     
     const formattedText = formatHeartRateZones(workout);

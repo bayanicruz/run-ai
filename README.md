@@ -78,17 +78,33 @@ PORT=3000
 ### Whoop
 - `GET /auth/whoop` - Initiates Whoop OAuth flow  
 - `GET /whoop/recovery` - Current recovery score
-- `GET /whoop/latest-running-workout` - Latest running workout with heart rate zones
+- `GET /whoop/latest` - Latest workout with heart rate zones
 
-**Example Response:**
+**Strava Example Response:**
 ```json
 {
   "formatted_text": "**Latest Run Analysis - 1/15/2025**\n\n**Activity:** Morning Run\n**Distance:** 5.20 km\n**Duration:** 25 minutes\n**Average Pace:** 4:49 min/km\n**Elevation Gain:** 45m\n**Average Speed:** 12.4 km/h\n\n**Splits:**\nKm 1: 4:52 min/km (+12m)\nKm 2: 4:45 min/km (+8m)\nKm 3: 4:51 min/km (+15m)\nKm 4: 4:47 min/km (+7m)\nKm 5: 4:43 min/km (+3m)"
 }
 ```
 
-**Formatted Output:**
+**Whoop Recovery Example Response:**
+```json
+{
+  "formatted_text": "**Today's Recovery: 97% (Green)**",
+  "recovery_score": 97
+}
+```
 
+**Whoop Latest Workout Example Response:**
+```json
+{
+  "formatted_text": "**Latest running - 8/30/2025**\n**Distance:** N/A km\n**Strain:** 20.64\n**Avg HR:** 155 bpm\n\n**Heart Rate Zones:**\nZone 1: 8min (15.2%)\nZone 2: 39min (36.4%)\nZone 3: 15min (24.2%)\nZone 4: 55min (18.2%)\nZone 5: 77min (6.1%)"
+}
+```
+
+**Formatted Outputs:**
+
+*Strava:*
 ```
 **Latest Run Analysis - 1/15/2025**
 
@@ -105,6 +121,26 @@ Km 2: 4:45 min/km (+8m)
 Km 3: 4:51 min/km (+15m)
 Km 4: 4:47 min/km (+7m)
 Km 5: 4:43 min/km (+3m)
+```
+
+*Whoop Recovery:*
+```
+**Today's Recovery: 97% (Green)**
+```
+
+*Whoop Latest Workout:*
+```
+**Latest running - 8/30/2025**
+**Distance:** N/A km
+**Strain:** 20.64
+**Avg HR:** 155 bpm
+
+**Heart Rate Zones:**
+Zone 1: 8min (15.2%)
+Zone 2: 39min (36.4%)
+Zone 3: 15min (24.2%)
+Zone 4: 55min (18.2%)
+Zone 5: 77min (6.1%)
 ```
 
 ## Usage
