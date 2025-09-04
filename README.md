@@ -58,3 +58,47 @@ STRAVA_CLIENT_SECRET=your_client_secret_here
 STRAVA_ACCESS_TOKEN=your_access_token_here
 PORT=3000
 ```
+
+## API Endpoints
+
+### `/health`
+Health check endpoint
+
+### `/auth`
+Initiates Strava OAuth flow (one-time setup)
+
+### `/latest-activity`
+Returns your most recent running activity formatted for Claude coaching analysis
+
+**Example Response:**
+```json
+{
+  "formatted_text": "**Latest Run Analysis - 1/15/2025**\n\n**Activity:** Morning Run\n**Distance:** 5.20 km\n**Duration:** 25 minutes\n**Average Pace:** 4:49 min/km\n**Elevation Gain:** 45m\n**Average Speed:** 12.4 km/h\n\n**Splits:**\nKm 1: 4:52 min/km (+12m)\nKm 2: 4:45 min/km (+8m)\nKm 3: 4:51 min/km (+15m)\nKm 4: 4:47 min/km (+7m)\nKm 5: 4:43 min/km (+3m)"
+}
+```
+
+**Formatted Output:**
+
+**Latest Run Analysis - 1/15/2025**
+
+**Activity:** Morning Run
+**Distance:** 5.20 km
+**Duration:** 25 minutes
+**Average Pace:** 4:49 min/km
+**Elevation Gain:** 45m
+**Average Speed:** 12.4 km/h
+
+**Splits:**
+Km 1: 4:52 min/km (+12m)
+Km 2: 4:45 min/km (+8m)
+Km 3: 4:51 min/km (+15m)
+Km 4: 4:47 min/km (+7m)
+Km 5: 4:43 min/km (+3m)
+
+## Usage
+1. Complete OAuth setup once via `/auth`
+2. Call `/latest-activity` to get formatted running data
+3. Copy `formatted_text` and paste into your Claude coaching thread
+
+## Deployment
+Ready to deploy to Render for iOS Shortcuts integration
