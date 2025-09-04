@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { generateAuthUrl, exchangeCodeForToken } from '../service.js';
+import { setWhoopToken } from '../../tokenCache.js';
 
 const router = Router();
 
@@ -20,8 +21,11 @@ router.get('/callback/whoop', async (req, res) => {
   try {
     const tokens = await exchangeCodeForToken(code);
     
+    const expiresAt = tokens.expires_in ? Date.now() + (tokens.expires_in * 1000) : undefined;
+    setWhoopToken(tokens.access_token, tokens.refresh_token, expiresAt);
+    
     res.json({
-      message: 'Whoop OAuth successful! Copy this access token to your .env file:',
+      message: 'Whoop OAuth successful! Token cached for testing.',
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token
     });

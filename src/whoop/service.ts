@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { WhoopTokenResponse, WhoopRecovery, WhoopRunningWorkout } from './types.js';
+import { getWhoopToken } from '../tokenCache.js';
 
 const WHOOP_API_BASE = 'https://api.prod.whoop.com/developer/v2';
 const WHOOP_AUTH_BASE = 'https://api.prod.whoop.com/oauth';
@@ -31,7 +32,9 @@ export async function exchangeCodeForToken(code: string): Promise<WhoopTokenResp
 }
 
 export async function getCurrentRecoveryScore(): Promise<number | null> {
-  const accessToken = process.env.WHOOP_ACCESS_TOKEN!;
+  const accessToken = getWhoopToken();
+  console.log('Using access token:', accessToken ? 'Token found' : 'No token');
+  if (!accessToken) return null;
   
   try {
     const recoveryResponse = await axios.get(`${WHOOP_API_BASE}/recovery`, {
@@ -43,36 +46,63 @@ export async function getCurrentRecoveryScore(): Promise<number | null> {
       }
     });
     
-    const recoveries = recoveryResponse.data.data || recoveryResponse.data;
+    console.log('Recovery API response:', JSON.stringify(recoveryResponse.data, null, 2));
+    
+    const recoveries = recoveryResponse.data.records || recoveryResponse.data.data || recoveryResponse.data;
     if (!recoveries.length) return null;
     
     const latestRecovery = recoveries[0];
-    return latestRecovery.score?.recovery_score || latestRecovery.recovery_score || null;
+    return latestRecovery.score?.recovery_score || null;
   } catch (error) {
     console.error('Failed to fetch recovery score:', error);
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+    }
     return null;
   }
 }
 
-export async function getLatestRunningWorkout(): Promise<WhoopRunningWorkout | null> {
-  const accessToken = process.env.WHOOP_ACCESS_TOKEN!;
+export async function getLatestRunningWorkout(): Promise<any> {
+  const accessToken = getWhoopToken();
+  if (!accessToken) return null;
   
   try {
-    const workoutResponse = await axios.get(`${WHOOP_API_BASE}/workout`, {
+    const workoutResponse = await axios.get(`${WHOOP_API_BASE}/activity/workout`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`
       },
       params: {
-        limit: 50
+        limit: 10
       }
     });
     
-    const workouts: WhoopRunningWorkout[] = workoutResponse.data.data || workoutResponse.data;
+    const workouts = workoutResponse.data.records || workoutResponse.data;
     const runningWorkout = workouts.find(workout => workout.sport_id === RUNNING_SPORT_ID);
     
-    return runningWorkout || null;
+    if (!runningWorkout) {
+      console.log('No running workouts found');
+      return null;
+    }
+    
+    console.log('Found running workout ID:', runningWorkout.id);
+    
+    // Get detailed workout data by ID
+    const detailResponse = await axios.get(`${WHOOP_API_BASE}/activity/workout/${runningWorkout.id}`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    
+    console.log('Workout detail response:', JSON.stringify(detailResponse.data, null, 2));
+    
+    return detailResponse.data;
   } catch (error) {
-    console.error('Failed to fetch running workout:', error);
+    console.error('Failed to fetch workouts:', error);
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', error.response.data);
+    }
     return null;
   }
 }

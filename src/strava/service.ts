@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { StravaTokenResponse, StravaActivity, SplitMetric } from './types.js';
+import { getStravaToken } from '../tokenCache.js';
 
 export function generateAuthUrl(redirectUri: string): string {
   const clientId = process.env.STRAVA_CLIENT_ID!;
@@ -19,7 +20,8 @@ export async function exchangeCodeForToken(code: string): Promise<StravaTokenRes
 }
 
 export async function getLatestActivity(): Promise<StravaActivity | null> {
-  const accessToken = process.env.STRAVA_ACCESS_TOKEN!;
+  const accessToken = getStravaToken();
+  if (!accessToken) return null;
   
   const response = await axios.get('https://www.strava.com/api/v3/athlete/activities', {
     headers: {
