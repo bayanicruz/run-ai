@@ -79,6 +79,7 @@ Returns your most recent running activity formatted for Claude coaching analysis
 
 **Formatted Output:**
 
+```
 **Latest Run Analysis - 1/15/2025**
 
 **Activity:** Morning Run
@@ -94,6 +95,7 @@ Km 2: 4:45 min/km (+8m)
 Km 3: 4:51 min/km (+15m)
 Km 4: 4:47 min/km (+7m)
 Km 5: 4:43 min/km (+3m)
+```
 
 ## Usage
 1. Complete OAuth setup once via `/auth`
