@@ -73,12 +73,17 @@ PORT=3000
 
 ### Strava
 - `GET /auth/strava` - Initiates Strava OAuth flow
-- `GET /strava/latest-activity` - Latest running activity with splits
+- `GET /strava/latest-activity` - Latest activity (any type) with splits (JSON)
+- `GET /strava/latest-activity/pace-speed` - Latest activity pace/speed graph data (JSON)
+- `GET /text/strava/latest-activity` - Latest activity formatted as plain text
+- `GET /text/strava/latest-activity/pace-speed` - Pace/speed analysis formatted as plain text
 
 ### Whoop
 - `GET /auth/whoop` - Initiates Whoop OAuth flow  
-- `GET /whoop/recovery` - Current recovery score
-- `GET /whoop/latest` - Latest workout with heart rate zones
+- `GET /whoop/recovery` - Current recovery score (JSON)
+- `GET /whoop/latest` - Latest workout with heart rate zones (JSON)
+- `GET /text/whoop/recovery` - Recovery score formatted as plain text
+- `GET /text/whoop/latest` - Latest workout formatted as plain text
 
 **Strava Example Response:**
 ```json
@@ -144,9 +149,26 @@ Zone 5: 77min (6.1%)
 ```
 
 ## Usage
+
+### For iOS Shortcuts
 1. Complete OAuth setup once via `/auth/strava` and `/auth/whoop`
-2. Call endpoints to get formatted fitness data
-3. Copy `formatted_text` and paste into your Claude coaching thread
+2. Use JSON endpoints (`/strava/*`, `/whoop/*`) for programmatic access
+3. Extract `formatted_text` from JSON response for display
+
+### For Copy-Pasting to Claude
+1. Use plain text endpoints (`/text/strava/*`, `/text/whoop/*`)
+2. Copy the response directly - no JSON parsing needed
+3. Paste into Claude for fitness analysis with proper line breaks
+
+## Changelog
+
+### 2025-09-05
+- **Updated Strava to support all activity types** (not just runs)
+- **Added pace/speed graph analysis** via Strava streams API
+- **Added plain text endpoints** with `/text/` prefix for easy copy-pasting
+- **Fixed data consistency** between activity summary and detailed streams
+- Enhanced formatting to show both elapsed time and moving time
+- Removed raw data from responses to reduce clutter
 
 ## Deployment
 Ready to deploy to Render for iOS Shortcuts integration
