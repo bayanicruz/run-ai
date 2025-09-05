@@ -46,4 +46,44 @@ router.get('/whoop/latest', async (req, res) => {
   }
 });
 
+router.get('/text/whoop/recovery', async (req, res) => {
+  try {
+    const recoveryScore = await getCurrentRecoveryScore();
+    
+    console.log('Recovery score returned from service:', recoveryScore);
+    
+    if (recoveryScore === null) {
+      return res.status(404).send('No recovery data found');
+    }
+    
+    const formattedText = formatRecoveryData(recoveryScore);
+    
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(formattedText);
+    
+  } catch (error) {
+    console.error('Error fetching recovery:', error);
+    res.status(500).send('Failed to fetch recovery data');
+  }
+});
+
+router.get('/text/whoop/latest', async (req, res) => {
+  try {
+    const workout = await getLatestWorkout();
+    
+    if (!workout) {
+      return res.status(404).send('No workouts found');
+    }
+    
+    const formattedText = formatHeartRateZones(workout);
+    
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(formattedText);
+    
+  } catch (error) {
+    console.error('Error fetching workout:', error);
+    res.status(500).send('Failed to fetch latest running workout');
+  }
+});
+
 export default router;
