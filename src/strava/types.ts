@@ -37,3 +37,31 @@ export interface FormattedActivity {
   elevation: string;
   averageSpeed: string;
 }
+
+export interface StravaStream {
+  type: string;
+  data: number[];
+  series_type: string;
+  original_size: number;
+  resolution: string;
+}
+
+export interface ActivityStreams {
+  time?: StravaStream;
+  distance?: StravaStream;
+  velocity_smooth?: StravaStream;
+  altitude?: StravaStream;
+  heartrate?: StravaStream;
+  cadence?: StravaStream;
+  watts?: StravaStream;
+  temp?: StravaStream;
+  moving?: StravaStream;
+  grade_smooth?: StravaStream;
+}
+
+export interface PaceSpeedData {
+  time_points: number[];
+  distance_points: number[];
+  speed_data: number[];
+  pace_data: number[];
+}
